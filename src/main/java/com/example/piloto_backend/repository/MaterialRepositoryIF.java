@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface MaterialRepositoryIF extends JpaRepository<Material, Long> {
-    // 1️⃣ Buscar materiais públicos (privado = false)
+    // (privado = false)
     public List<Material> findByPrivadoFalse();
 
-    // 2️⃣ Buscar materiais privados (privado = true)
+    // (privado = true)
     public List<Material> findByPrivadoTrue();
 
-    // 3️⃣ Buscar materiais pelo usuário
+    //
     public List<Material> findByUserId(UUID userId);
 
 }
