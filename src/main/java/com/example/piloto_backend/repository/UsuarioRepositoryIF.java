@@ -9,6 +9,4 @@ import java.util.UUID;
 
 public interface UsuarioRepositoryIF extends JpaRepository<Usuario, UUID> {
     List<Usuario> findByNomeAndSenha(String nome, String senha);
-
-    Optional<Usuario> findByNome(String nome);
 }
