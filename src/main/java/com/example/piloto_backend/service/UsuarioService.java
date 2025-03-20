@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -13,15 +14,24 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepositoryIF usuarioRepositoryIF;
 
-    public List<Usuario> read(){
+    public List<Usuario> read() {
         return this.usuarioRepositoryIF.findAll();
     }
 
-    public Usuario register(Usuario user){
-       return this.usuarioRepositoryIF.save(user);
+    public Usuario register(Usuario usuario) {
+        return this.usuarioRepositoryIF.save(usuario);
     }
 
-    public List<Usuario> login(String nome, String senha){
-        return this.usuarioRepositoryIF.findByNomeAndSenha(nome, senha);
+    public Optional<Usuario> login(String nome, String senha) {
+        // Assumindo que você tem um método findByNomeAndSenha no repository
+        // Se não tiver, você precisará implementá-lo
+        // return this.usuarioRepositoryIF.findByNomeAndSenha(nome, senha);
+        
+       
+        Optional<Usuario> usuario = this.usuarioRepositoryIF.findByNome(nome);
+        if (usuario.isPresent() && usuario.get().getSenha().equals(senha)) {
+            return usuario;
+        }
+        return Optional.empty();
     }
 }
