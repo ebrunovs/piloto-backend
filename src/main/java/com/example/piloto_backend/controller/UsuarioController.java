@@ -1,27 +1,32 @@
-package com.example.piloto_backend.service;
+package com.example.piloto_backend.controller;
 
 import com.example.piloto_backend.model.Usuario;
-import com.example.piloto_backend.repository.UsuarioRepositoryIF;
+import com.example.piloto_backend.model.UsuarioLoginDTO;
+import com.example.piloto_backend.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Service
-public class UsuarioService {
+@RestController
+@RequestMapping("/users")
+public class UsuarioController {
 
     @Autowired
-    private UsuarioRepositoryIF usuarioRepositoryIF;
+    private UsuarioService usuarioService;
 
+    @GetMapping
     public List<Usuario> read(){
-        return this.usuarioRepositoryIF.findAll();
+        return this.usuarioService.read();
     }
 
-    public Usuario register(Usuario user){
-       return this.usuarioRepositoryIF.save(user);
+    @PostMapping
+    public Usuario register(@RequestBody Usuario user){
+        return this.usuarioService.register(user);
     }
 
-    public List<Usuario> login(String nome, String senha){
-        return this.usuarioRepositoryIF.findByNomeAndSenha(nome, senha);
+    @PostMapping("/login")
+    public List<Usuario> login(@RequestBody UsuarioLoginDTO usuarioLoginDTO){
+        return this.usuarioService.login(usuarioLoginDTO.nome(), usuarioLoginDTO.senha());
     }
 }
