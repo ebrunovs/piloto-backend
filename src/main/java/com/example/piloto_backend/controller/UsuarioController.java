@@ -1,70 +1,27 @@
-package com.example.piloto_backend.controller;
+package com.example.piloto_backend.service;
 
 import com.example.piloto_backend.model.Usuario;
-import com.example.piloto_backend.model.UsuarioLoginDTO;
-import com.example.piloto_backend.service.UsuarioService;
+import com.example.piloto_backend.repository.UsuarioRepositoryIF;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-@RestController
-@RequestMapping("/users")
-@CrossOrigin(origins = "*")
-public class UsuarioController {
+@Service
+public class UsuarioService {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UsuarioRepositoryIF usuarioRepositoryIF;
 
-    @GetMapping
-    public ResponseEntity<?> read() {
-        try {
-            List<Usuario> usuarios = this.usuarioService.read();
-            return ResponseEntity.ok(usuarios);
-        } catch (Exception e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro ao buscar usuários: " + e.getMessage());
-        }
+    public List<Usuario> read(){
+        return this.usuarioRepositoryIF.findAll();
     }
 
-    @PostMapping
-    public ResponseEntity<?> register(@RequestBody Usuario user) {
-        try {
-            Usuario novoUsuario = this.usuarioService.register(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Erro nos dados fornecidos: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro ao registrar usuário: " + e.getMessage());
-        }
+    public Usuario register(Usuario user){
+       return this.usuarioRepositoryIF.save(user);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UsuarioLoginDTO usuarioLoginDTO) {
-        try {
-            Optional<Usuario> usuario = this.usuarioService.login(usuarioLoginDTO.nome(), usuarioLoginDTO.senha());
-            
-            if (usuario.isPresent()) {
-                return ResponseEntity.ok(usuario.get());
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
-            }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("Dados de login inválidos: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Erro ao processar login: " + e.getMessage());
-        }
+    public List<Usuario> login(String nome, String senha){
+        return this.usuarioRepositoryIF.findByNomeAndSenha(nome, senha);
     }
 }
